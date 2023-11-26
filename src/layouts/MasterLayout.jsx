@@ -32,7 +32,7 @@ export default function MasterLayout() {
                 </a>
               </li>
               <li className='nav-item' id='login-nav-item'>
-                <a className='nav-link active' href='login.html'>
+                <a className='nav-link active' href='/login'>
                   Login
                 </a>
               </li>
