@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 export default function Login() {
   useEffect(() => {
     google.accounts.id.initialize({
-      client_id: '1023493686668-vpnrgtvrqgm7c3bajoj8q463lgktmq78.apps.googleusercontent.com',
+      client_id: import.meta.env.REACT_GOOGLE_CLIENT_ID,
       callback: handleCredentialResponse,
     })
     google.accounts.id.renderButton(

@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom'
 import MasterLayout from './layouts/MasterLayout'
 import About from './pages/About'
 import Login from './pages/Login'
+import ErrorPage from './layouts/errorPage'
 
 export const router = createBrowserRouter([
   {
@@ -17,5 +18,6 @@ export const router = createBrowserRouter([
         element: <Login />,
       },
     ],
+    errorElement: <ErrorPage />
   },
 ])
