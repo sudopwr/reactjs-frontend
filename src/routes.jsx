@@ -2,7 +2,7 @@ import { createBrowserRouter } from 'react-router-dom'
 import MasterLayout from './layouts/MasterLayout'
 import About from './pages/About'
 import Login from './pages/Login'
-import ErrorPage from './layouts/errorPage'
+import ErrorPage from './layouts/ErrorPage'
 
 export const router = createBrowserRouter([
   {

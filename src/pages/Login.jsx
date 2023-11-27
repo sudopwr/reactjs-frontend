@@ -18,15 +18,13 @@ export default function Login() {
   }
 
   return (
-    <>
-      <div className='container-md w-25 mt-5'>
-        <div className='row'>
-          <div className='d-flex justify-content-center'>
-            <p>Use google secure login!</p>
-          </div>
-          <div className='d-flex justify-content-center' id='googleDiv'></div>
+    <div className='container-md w-25 mt-5'>
+      <div className='row'>
+        <div className='d-flex justify-content-center'>
+          <p>Use google secure login!</p>
         </div>
+        <div className='d-flex justify-content-center' id='googleDiv'></div>
       </div>
-    </>
+    </div>
   )
 }
