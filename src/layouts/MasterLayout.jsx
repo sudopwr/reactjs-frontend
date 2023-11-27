@@ -84,11 +84,7 @@ export default function MasterLayout() {
           </div>
         </div>
       </nav>
-      <div className='container-lg mt-5'>
-        <div className='row text-gray-700 g-4'>
-          <Outlet />
-        </div>
-      </div>
+      <Outlet />
     </>
   )
 }
