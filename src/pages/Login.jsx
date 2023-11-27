@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { getDecodedAccessToken, login } from '../factories/login'
 
 export default function Login() {
   useEffect(() => {
@@ -13,8 +14,14 @@ export default function Login() {
     google.accounts.id.prompt()
   }, [])
 
-  const handleCredentialResponse = (response) => {
+  const handleCredentialResponse = async (response) => {
     console.log('Encoded JWT ID token: ' + response.credential)
+    try {
+      await login(response.credential)
+      console.log(getDecodedAccessToken())
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   return (
