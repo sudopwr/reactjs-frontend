@@ -1,6 +1,16 @@
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
+import { useRecoilState } from 'recoil'
+import { accountState } from '../store/atoms'
 
 export default function MasterLayout() {
+  const [account, setAccount] = useRecoilState(accountState)
+  const navigate = useNavigate()
+
+  const logout = () => {
+    setAccount(undefined)
+    navigate('/login')
+  }
+
   return (
     <>
       <h1 className='text-center mt-4'>
@@ -31,34 +41,45 @@ export default function MasterLayout() {
                   About
                 </a>
               </li>
-              <li className='nav-item' id='login-nav-item'>
-                <a className='nav-link active' href='/login'>
-                  Login
-                </a>
-              </li>
-              <li className='nav-item' id='products-nav-item'>
-                <a className='nav-link' href='products.html'>
-                  Products
-                </a>
-              </li>
-              <li className='nav-item' id='orders-nav-item'>
-                <a className='nav-link active' href='orders.html'>
-                  Orders
-                </a>
-              </li>
-              <li className='nav-item' id='logout-nav-item'>
-                <a className='nav-link'>Logout</a>
-              </li>
-              <li className='nav-item' id='user-details-nav-item'>
-                <a className='nav-link'>
-                  <img
-                    id='user-image'
-                    className='img-thumbnail rounded-circle w-25 border-red-800-color'
-                    alt='img'
-                  />
-                  <span id='user-name' className='text-red-800-color'></span>
-                </a>
-              </li>
+
+              {account?.email ? (
+                <>
+                  {account.role === 'admin' && (
+                    <li className='nav-item' id='products-nav-item'>
+                      <a className='nav-link' href='products.html'>
+                        Products
+                      </a>
+                    </li>
+                  )}
+                  <li className='nav-item' id='orders-nav-item'>
+                    <a className='nav-link active' href='orders.html'>
+                      Orders
+                    </a>
+                  </li>
+                  <li className='nav-item' id='logout-nav-item'>
+                    <a className='nav-link' onClick={logout}>
+                      Logout
+                    </a>
+                  </li>
+                  <li className='nav-item' id='user-details-nav-item'>
+                    <a className='nav-link'>
+                      <img
+                        id='user-image'
+                        className='img-thumbnail rounded-circle w-25 border-red-800-color'
+                        alt='img'
+                        src={account.image}
+                      />
+                      <span id='user-name' className='text-red-800-color'></span>
+                    </a>
+                  </li>
+                </>
+              ) : (
+                <li className='nav-item' id='login-nav-item'>
+                  <a className='nav-link active' href='/login'>
+                    Login
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
         </div>

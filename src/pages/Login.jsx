@@ -2,8 +2,10 @@ import { useEffect } from 'react'
 import { useRecoilState } from 'recoil'
 import { login } from '../factories/login'
 import { accountState } from '../store/atoms'
+import { useNavigate } from 'react-router-dom'
 
 export default function Login() {
+  const navigate = useNavigate()
   const [ _, setAccount ] = useRecoilState(accountState)
 
   useEffect(() => {
@@ -19,10 +21,10 @@ export default function Login() {
   }, [])
 
   const handleCredentialResponse = async (response) => {
-    console.log('Encoded JWT ID token: ' + response.credential)
     try {
       const loginResponse = await login(response.credential)
       setAccount(loginResponse)
+      navigate('/')
     } catch (e) {
       console.error(e)
     }

@@ -7,7 +7,12 @@ export const login = async (jwt) => {
   const response = await axios.post(`${REACT_BE_SERVER_URL}/login`, { jwt })
   const token = response.data.token
   const decodedAccessToken = decodeJwtResponse(token)
+  const googleUser = decodeJwtResponse(jwt)
+  
   return {
+    email: googleUser.email,
+    name: googleUser.name,
+    image: googleUser.picture,
     accessToken: token,
     decodedAccessToken,
     role: decodedAccessToken.role
