@@ -1,7 +1,11 @@
 import { useEffect } from 'react'
-import { getDecodedAccessToken, login } from '../factories/login'
+import { useRecoilState } from 'recoil'
+import { login } from '../factories/login'
+import { accountState } from '../store/atoms'
 
 export default function Login() {
+  const [ account, setAccount ] = useRecoilState(accountState)
+
   useEffect(() => {
     google.accounts.id.initialize({
       client_id: import.meta.env.REACT_GOOGLE_CLIENT_ID,
@@ -17,8 +21,8 @@ export default function Login() {
   const handleCredentialResponse = async (response) => {
     console.log('Encoded JWT ID token: ' + response.credential)
     try {
-      await login(response.credential)
-      console.log(getDecodedAccessToken())
+      const loginResponse = await login(response.credential)
+      setAccount(loginResponse)
     } catch (e) {
       console.error(e)
     }
