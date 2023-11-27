@@ -4,7 +4,7 @@ import { login } from '../factories/login'
 import { accountState } from '../store/atoms'
 
 export default function Login() {
-  const [ account, setAccount ] = useRecoilState(accountState)
+  const [ _, setAccount ] = useRecoilState(accountState)
 
   useEffect(() => {
     google.accounts.id.initialize({
