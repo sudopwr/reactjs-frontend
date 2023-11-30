@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Link, Outlet, useNavigate } from 'react-router-dom'
 import { useRecoilState } from 'recoil'
 import { accountState } from '../store/atoms'
 
@@ -32,37 +32,37 @@ export default function MasterLayout() {
           <div className='collapse navbar-collapse' id='navbarNav'>
             <ul className='navbar-nav mx-auto align-item-center'>
               <li className='nav-item active' id='home-nav-item'>
-                <a className='nav-link' aria-current='page' href='/'>
+                <Link className='nav-link' aria-current='page' to='/'>
                   Home
-                </a>
+                </Link>
               </li>
               <li className='nav-item' id='about-nav-item'>
-                <a className='nav-link' href='/about'>
+                <Link className='nav-link' to='/about'>
                   About
-                </a>
+                </Link>
               </li>
 
               {account?.email ? (
                 <>
                   {account.role === 'admin' && (
                     <li className='nav-item' id='products-nav-item'>
-                      <a className='nav-link' href='products.html'>
+                      <Link className='nav-link' to='/product'>
                         Products
-                      </a>
+                      </Link>
                     </li>
                   )}
                   <li className='nav-item' id='orders-nav-item'>
-                    <a className='nav-link active' href='orders.html'>
+                    <Link className='nav-link active' to='orders.html'>
                       Orders
-                    </a>
+                    </Link>
                   </li>
                   <li className='nav-item' id='logout-nav-item'>
-                    <a className='nav-link' onClick={logout}>
+                    <Link className='nav-link' onClick={logout}>
                       Logout
-                    </a>
+                    </Link>
                   </li>
                   <li className='nav-item' id='user-details-nav-item'>
-                    <a className='nav-link'>
+                    <Link className='nav-link'>
                       <img
                         id='user-image'
                         className='img-thumbnail rounded-circle w-25 border-red-800-color'
@@ -70,14 +70,14 @@ export default function MasterLayout() {
                         src={account.image}
                       />
                       <span id='user-name' className='text-red-800-color'></span>
-                    </a>
+                    </Link>
                   </li>
                 </>
               ) : (
                 <li className='nav-item' id='login-nav-item'>
-                  <a className='nav-link active' href='/login'>
+                  <Link className='nav-link active' to='/login'>
                     Login
-                  </a>
+                  </Link>
                 </li>
               )}
             </ul>
