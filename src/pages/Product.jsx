@@ -1,50 +1,51 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import { useNavigate } from 'react-router-dom'
-import { accountState } from '../store/atoms'
+import { accountState, editProductState } from '../store/atoms'
 import demoImage from '../assets/demoimage.png'
 import {
   requiredValidation,
   numberValidation,
   alphabetsSpaceValidation,
 } from '../factories/validation'
-import { makeAddProduct } from '../factories/product'
+import { makeAddProduct, makeEditProduct } from '../factories/product'
 
 export default function Product() {
   const account = useRecoilValue(accountState)
+  const editProduct = useRecoilValue(editProductState)
   const navigate = useNavigate()
 
   const [product, setProduct] = useState({
     name: {
       name: 'name',
-      value: '',
+      value: editProduct?.name || '',
       error: false,
       errorMessage: 'Name is required and numbers not allowed',
       validations: [requiredValidation, alphabetsSpaceValidation],
     },
     price: {
       name: 'price',
-      value: '',
+      value: editProduct?.price || '',
       error: false,
       errorMessage: 'Price must be number',
       validations: [requiredValidation, numberValidation],
     },
     quantity: {
       name: 'quantity',
-      value: '',
+      value: editProduct?.quantity || '',
       error: false,
       errorMessage: 'Quantity must be number',
       validations: [requiredValidation],
     },
     description: {
       name: 'description',
-      value: '',
+      value: editProduct?.description || '',
       error: false,
       errorMessage: 'Description is required',
       validations: [requiredValidation],
     },
     image: {
-      value: '',
+      value: editProduct?.image || '',
       error: false,
       errorMessage: 'Image is required',
       validations: [],
@@ -61,7 +62,11 @@ export default function Product() {
         description: product.description.value,
         image: product.image.value,
       }
-      await makeAddProduct(accessToken, data)
+      if (editProduct?.id) {
+        await makeEditProduct(accessToken, editProduct.id, data)
+      } else {
+        await makeAddProduct(accessToken, data)
+      }
       navigate('/')
     } catch (e) {
       console.error(e)

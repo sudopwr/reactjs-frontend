@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
-import { accountState } from '../store/atoms'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import { accountState, editProductState } from '../store/atoms'
 import { makeGetProducts } from '../factories/product'
+import { useNavigate } from 'react-router-dom'
 
 export default function Home() {
   const [products, setProducts] = useState([])
   const account = useRecoilValue(accountState)
+  const [_, setEditProduct] = useRecoilState(editProductState)
+  const navigate = useNavigate()
 
   useEffect(() => {
     getProducts()
@@ -14,10 +17,14 @@ export default function Home() {
   const getProducts = async () => {
     try {
       setProducts(await makeGetProducts())
-      console.log(products)
     } catch (e) {
       console.error(e)
     }
+  }
+
+  const editProduct = async (product) => {
+    setEditProduct(product)
+    navigate('/product')
   }
 
   return (
@@ -25,7 +32,7 @@ export default function Home() {
       <div className='row text-gray-700 g-4' id='product-list'>
         {products?.length > 0 &&
           products?.map((product) => (
-            <div className='col-sm-12 col-md-6 col-lg-3'>
+            <div className='col-sm-12 col-md-6 col-lg-3' key={product.id}>
               <div className='card text-center' key={product.id}>
                 <img src={product.image} className='card-img-top' alt='pencil' />
                 <div className='card-body'>
@@ -38,11 +45,16 @@ export default function Home() {
                 <div className='card-body'>
                   <a href='checkout.html?id=${product.id}' className='btn btn-primary'>
                     <i className='bi bi-cart-plus'></i> Buy
-                  </a>&nbsp;
+                  </a>
+                  &nbsp;
                   <button className='btn btn-outline-danger'>
                     <i className='bi bi-x-circle'></i>
-                  </button>&nbsp;
-                  <button className='btn btn-outline-success'>
+                  </button>
+                  &nbsp;
+                  <button
+                    className='btn btn-outline-success'
+                    onClick={() => editProduct(product)}
+                  >
                     <i className='bi bi-pen'></i>
                   </button>
                 </div>

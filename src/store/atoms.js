@@ -11,3 +11,8 @@ export const accountState = atom({
     picture: undefined
   },
 })
+
+export const editProductState = atom({
+  key: 'editProduct',
+  default: undefined
+})
