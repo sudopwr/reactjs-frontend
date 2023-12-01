@@ -1,17 +1,51 @@
 import { useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import { accountState } from '../store/atoms'
-import { makeGetProducts } from '../factories/product'
 import demoImage from '../assets/demoimage.png'
+import {
+  requiredValidation,
+  numberValidation,
+  alphabetsSpaceValidation,
+} from '../factories/validation'
 
 export default function Product() {
   const account = useRecoilValue(accountState)
+
   const [product, setProduct] = useState({
-    name: '',
-    price: 0,
-    quantity: 0,
-    decription: '',
-    image: '',
+    name: {
+      name: 'name',
+      value: '',
+      error: false,
+      errorMessage: 'Name is required and numbers not allowed',
+      validations: [requiredValidation, alphabetsSpaceValidation],
+    },
+    price: {
+      name: 'price',
+      value: '',
+      error: false,
+      errorMessage: 'Price must be number',
+      validations: [requiredValidation, numberValidation],
+    },
+    quantity: {
+      name: 'quantity',
+      value: '',
+      error: false,
+      errorMessage: 'Quantity must be number',
+      validations: [requiredValidation],
+    },
+    description: {
+      name: 'description',
+      value: '',
+      error: false,
+      errorMessage: 'Description is required',
+      validations: [requiredValidation],
+    },
+    image: {
+      value: '',
+      error: false,
+      errorMessage: 'Image is required',
+      validations: [],
+    },
   })
 
   const onSubmit = () => {
@@ -25,13 +59,17 @@ export default function Product() {
   function changeImage(input) {
     if (input?.target?.files[0]) {
       const reader = new FileReader()
-      
+
       reader.onload = function (e) {
         const imageCode = e.target.result
         document.getElementById('demoImage').src = e.target.result
         setProduct({
           ...product,
-          image: imageCode,
+          image: {
+            ...product.image,
+            image: imageCode,
+            error: false
+          }
         })
       }
 
@@ -41,62 +79,105 @@ export default function Product() {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    console.log(name, value)
     setProduct({
       ...product,
-      [name]: value,
+      [name]: {
+        ...product[name],
+        value,
+      },
     })
+  }
+
+  const handleSubmit = (e, onSubmit) => {
+    e.preventDefault()
+    const errors = []
+    Object.keys(product).forEach((key) => {
+      const validations = product[key].validations
+      let noError = true
+      validations.forEach((validation) => {
+        if (noError === false) return true
+        noError = validation(product[key].value)
+      })
+
+      if (noError === false) {
+        setProduct((product) => ({
+          ...product,
+          [key]: {
+            ...product[key],
+            error: true,
+          },
+        }))
+
+        errors.push({
+          name: key,
+          error: true,
+        })
+      } else {
+        setProduct((product) => ({
+          ...product,
+          [key]: {
+            ...product[key],
+            error: false,
+          },
+        }))
+      }
+    })
+    return errors.length == 0 ? onSubmit() : false;
   }
 
   return (
     <div className='container-md w-25 mt-5'>
       <div className='row'>
         <div className='d-flex justify-content-center'>
-          <form onSubmit={(e) => e.preventDefault()}>
+          <form onSubmit={(e) => handleSubmit(e, onSubmit)}>
             <div className='mb-3'>
               <label htmlFor='name' className='form-label'>
                 Name
               </label>
               <input
                 type='text'
-                name='name'
-                required
                 className='form-control'
-                id='name'
                 placeholder='Enter product name'
-                value={product.name}
+                name={product.name.name}
+                id={product.name.name}
+                value={product.name.value}
                 onChange={handleChange}
               />
+              {product.name.error && <div className='text-danger'>{product.name.errorMessage}</div>}
             </div>
             <div className='mb-3'>
               <label htmlFor='price' className='form-label'>
                 price
               </label>
               <input
-                type='number'
-                name='price'
-                required
+                type='text'
                 className='form-control'
-                id='price'
-                placeholder='100.00'
-                value={product.price}
+                placeholder='Enter product price'
+                name={product.price.name}
+                id={product.price.name}
+                value={product.price.value}
                 onChange={handleChange}
               />
+              {product.price.error && (
+                <div className='text-danger'>{product.price.errorMessage}</div>
+              )}
             </div>
             <div className='mb-3'>
               <label htmlFor='quantity' className='form-label'>
                 Quantity
               </label>
               <input
-                type='number'
-                name='quantity'
-                required
+                type='text'
                 className='form-control'
-                id='quantity'
                 placeholder='Enter Quantity'
-                value={product.quantity}
+                name={product.quantity.name}
+                id={product.quantity.name}
+                value={product.quantity.value}
                 onChange={handleChange}
               />
+              {product.quantity.error && (
+                <div className='text-danger'>{product.quantity.errorMessage}</div>
+              )}
             </div>
             <div className='mb-3'>
               <label htmlFor='description' className='form-label'>
@@ -104,12 +185,15 @@ export default function Product() {
               </label>
               <textarea
                 className='form-control'
-                name='description'
-                id='description'
                 rows='3'
-                value={product.description}
+                name={product.description.name}
+                id={product.description.name}
+                value={product.description.value}
                 onChange={handleChange}
               ></textarea>
+              {product.description.error && (
+                <div className='text-danger'>{product.description.errorMessage}</div>
+              )}
             </div>
             <div className='mb-3'>
               <label htmlFor='productImage' className='form-label'>
@@ -123,13 +207,16 @@ export default function Product() {
               />
               <img
                 id='demoImage'
-                src={product.image || demoImage}
+                src={product.image.value || demoImage}
                 className='w-25 mt-2'
                 alt='your image'
               />
+              {product.image.error && (
+                <div className='text-danger'>{product.image.errorMessage}</div>
+              )}
             </div>
             <div className='col-12 d-flex justify-content-center'>
-              <button className='btn btn-primary' type='submit' onClick={onSubmit}>
+              <button className='btn btn-primary' type='submit'>
                 Submit
               </button>
             </div>
