@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useRecoilValue } from 'recoil'
+import { useNavigate } from 'react-router-dom'
 import { accountState } from '../store/atoms'
 import demoImage from '../assets/demoimage.png'
 import {
@@ -7,9 +8,11 @@ import {
   numberValidation,
   alphabetsSpaceValidation,
 } from '../factories/validation'
+import { makeAddProduct } from '../factories/product'
 
 export default function Product() {
   const account = useRecoilValue(accountState)
+  const navigate = useNavigate()
 
   const [product, setProduct] = useState({
     name: {
@@ -48,9 +51,18 @@ export default function Product() {
     },
   })
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     try {
-      console.log(product)
+      const { accessToken } = account
+      const data = {
+        name: product.name.value,
+        price: product.price.value,
+        quantity: product.quantity.value,
+        description: product.description.value,
+        image: product.image.value,
+      }
+      await makeAddProduct(accessToken, data)
+      navigate('/')
     } catch (e) {
       console.error(e)
     }
@@ -62,14 +74,14 @@ export default function Product() {
 
       reader.onload = function (e) {
         const imageCode = e.target.result
-        document.getElementById('demoImage').src = e.target.result
+        document.getElementById('demoImage').src = imageCode
         setProduct({
           ...product,
           image: {
             ...product.image,
-            image: imageCode,
-            error: false
-          }
+            value: imageCode,
+            error: false,
+          },
         })
       }
 
@@ -122,7 +134,7 @@ export default function Product() {
         }))
       }
     })
-    return errors.length == 0 ? onSubmit() : false;
+    return errors.length == 0 ? onSubmit() : false
   }
 
   return (
