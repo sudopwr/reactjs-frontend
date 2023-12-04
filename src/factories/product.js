@@ -10,8 +10,8 @@ export const makeGetProducts = async () => {
 export const makeAddProduct = async (accessToken, data) => {
   const response = await axios.post(`${REACT_BE_SERVER_URL}/products`, data, {
     headers: {
-      Authorization : `Bearer ${accessToken}`
-    }
+      Authorization: `Bearer ${accessToken}`,
+    },
   })
   return response
 }
@@ -19,8 +19,17 @@ export const makeAddProduct = async (accessToken, data) => {
 export const makeEditProduct = async (accessToken, id, data) => {
   const response = await axios.put(`${REACT_BE_SERVER_URL}/products/${id}`, data, {
     headers: {
-      Authorization : `Bearer ${accessToken}`
-    }
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+  return response
+}
+
+export const makeDeleteProduct = async (accessToken, id) => {
+  const response = await axios.delete(`${REACT_BE_SERVER_URL}/products/${id}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
   })
   return response
 }

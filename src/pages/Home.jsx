@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { accountState, editProductState } from '../store/atoms'
-import { makeGetProducts } from '../factories/product'
+import { makeDeleteProduct, makeGetProducts } from '../factories/product'
 import { useNavigate } from 'react-router-dom'
 
 export default function Home() {
@@ -27,6 +27,19 @@ export default function Home() {
     navigate('/product')
   }
 
+  const deleteProduct = async (product) => {
+    try {
+      if (!confirm('Are you sure want to delete this product?')) {
+        return
+      }
+
+      await makeDeleteProduct(account.accessToken, product?.id)
+      await getProducts()
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
   return (
     <div className='container-lg mt-5'>
       <div className='row text-gray-700 g-4' id='product-list'>
@@ -47,14 +60,11 @@ export default function Home() {
                     <i className='bi bi-cart-plus'></i> Buy
                   </a>
                   &nbsp;
-                  <button className='btn btn-outline-danger'>
+                  <button className='btn btn-outline-danger' onClick={() => deleteProduct(product)}>
                     <i className='bi bi-x-circle'></i>
                   </button>
                   &nbsp;
-                  <button
-                    className='btn btn-outline-success'
-                    onClick={() => editProduct(product)}
-                  >
+                  <button className='btn btn-outline-success' onClick={() => editProduct(product)}>
                     <i className='bi bi-pen'></i>
                   </button>
                 </div>
