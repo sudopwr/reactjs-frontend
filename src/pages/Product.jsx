@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import { useNavigate } from 'react-router-dom'
 import { accountState, editProductState } from '../store/atoms'
 import demoImage from '../assets/demoimage.png'
@@ -12,7 +12,7 @@ import { makeAddProduct, makeEditProduct } from '../factories/product'
 
 export default function Product() {
   const account = useRecoilValue(accountState)
-  const editProduct = useRecoilValue(editProductState)
+  const [editProduct, setEditProduct] = useRecoilState(editProductState)
   const navigate = useNavigate()
 
   const [product, setProduct] = useState({
@@ -64,6 +64,7 @@ export default function Product() {
       }
       if (editProduct?.id) {
         await makeEditProduct(accessToken, editProduct.id, data)
+        setEditProduct({})
       } else {
         await makeAddProduct(accessToken, data)
       }
