@@ -52,7 +52,7 @@ export default function MasterLayout() {
                     </li>
                   )}
                   <li className='nav-item' id='orders-nav-item'>
-                    <Link className='nav-link active' to='orders.html'>
+                    <Link className='nav-link active' to='/orders'>
                       Orders
                     </Link>
                   </li>

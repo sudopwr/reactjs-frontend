@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import { accountState, editProductState } from '../store/atoms'
+import { accountState, checkoutProductState, editProductState } from '../store/atoms'
 import { makeDeleteProduct, makeGetProducts } from '../factories/product'
 import { useNavigate } from 'react-router-dom'
 
@@ -8,6 +8,7 @@ export default function Home() {
   const [products, setProducts] = useState([])
   const account = useRecoilValue(accountState)
   const [_, setEditProduct] = useRecoilState(editProductState)
+  const [__, setCheckoutProduct] = useRecoilState(checkoutProductState)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -25,6 +26,11 @@ export default function Home() {
   const editProduct = async (product) => {
     setEditProduct(product)
     navigate('/product')
+  }
+
+  const checkoutProduct = async (product) => {
+    setCheckoutProduct(product)
+    navigate('/checkout')
   }
 
   const deleteProduct = async (product) => {
@@ -56,9 +62,9 @@ export default function Home() {
                   </h5>
                 </div>
                 <div className='card-body'>
-                  <a href='checkout.html?id=${product.id}' className='btn btn-primary'>
+                  <button className='btn btn-outline-danger' onClick={() => checkoutProduct(product)} className='btn btn-primary'>
                     <i className='bi bi-cart-plus'></i> Buy
-                  </a>
+                  </button>
                   &nbsp;
                   <button className='btn btn-outline-danger' onClick={() => deleteProduct(product)}>
                     <i className='bi bi-x-circle'></i>

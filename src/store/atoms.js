@@ -16,3 +16,8 @@ export const editProductState = atom({
   key: 'editProduct',
   default: undefined
 })
+
+export const checkoutProductState = atom({
+  key: 'checkoutProductState',
+  default: undefined
+})
