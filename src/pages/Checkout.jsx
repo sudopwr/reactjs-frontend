@@ -2,6 +2,7 @@ import { useRecoilValue } from 'recoil'
 import { accountState, checkoutProductState } from '../store/atoms'
 import { makePlaceOrder } from '../factories/orders'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export default function Checkout() {
   const checkoutProductStore = useRecoilValue(checkoutProductState)

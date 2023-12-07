@@ -61,19 +61,31 @@ export default function Home() {
                     <i className='bi bi-currency-rupee'></i> {product.price} /-
                   </h5>
                 </div>
-                <div className='card-body'>
-                  <button className='btn btn-outline-danger' onClick={() => checkoutProduct(product)} className='btn btn-primary'>
-                    <i className='bi bi-cart-plus'></i> Buy
-                  </button>
-                  &nbsp;
-                  <button className='btn btn-outline-danger' onClick={() => deleteProduct(product)}>
-                    <i className='bi bi-x-circle'></i>
-                  </button>
-                  &nbsp;
-                  <button className='btn btn-outline-success' onClick={() => editProduct(product)}>
-                    <i className='bi bi-pen'></i>
-                  </button>
-                </div>
+                {account?.email && (
+                  <div className='card-body'>
+                    <button onClick={() => checkoutProduct(product)} className='btn btn-primary'>
+                      <i className='bi bi-cart-plus'></i> Buy
+                    </button>
+                    {account.role === 'admin' && (
+                      <>
+                        &nbsp;
+                        <button
+                          className='btn btn-outline-danger'
+                          onClick={() => deleteProduct(product)}
+                        >
+                          <i className='bi bi-x-circle'></i>
+                        </button>
+                        &nbsp;
+                        <button
+                          className='btn btn-outline-success'
+                          onClick={() => editProduct(product)}
+                        >
+                          <i className='bi bi-pen'></i>
+                        </button>
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           ))}

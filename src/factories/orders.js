@@ -10,3 +10,17 @@ export const makePlaceOrder = async (accessToken, data) => {
   })
   return response
 }
+
+export const getOrders = async (accessToken, role) => {
+  let url = `${REACT_BE_SERVER_URL}/orders/user`
+  if (role === 'admin') {
+    url = `${REACT_BE_SERVER_URL}/orders`
+  }
+
+  const response = await axios.get(url, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+  return response.data
+}
