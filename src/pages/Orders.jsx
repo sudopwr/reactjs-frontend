@@ -29,7 +29,13 @@ export default function Orders() {
     setOrderDetails(order)
   }
 
-  const handleStatusUpdate = () => {}
+  const handleStatusUpdate = (status) => {
+    if (!status) {
+      setShow(false)
+      return;
+    }
+    alert(`Successfully updated to ${status}`)
+  }
 
   return (
     <div className='container-md mt-5'>
