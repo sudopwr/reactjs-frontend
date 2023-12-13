@@ -12,6 +12,10 @@ OrderStatusUpdateDialog.propTypes = {
 export default function OrderStatusUpdateDialog({ show, order, onStatusUpdate } = props) {
   const [orderStatus, setOrderStatus] = useState(undefined)
 
+  useEffect(() => {
+    setOrderStatus(order?.status)
+  }, [order])
+
   const handleClose = () => {
     onStatusUpdate(undefined)
   }
@@ -48,7 +52,7 @@ export default function OrderStatusUpdateDialog({ show, order, onStatusUpdate } 
             <tr>
               <td>Order status</td>
               <td>
-                <Form.Select name='status' onChange={handleSelectChange}>
+                <Form.Select name='status' value={orderStatus} onChange={handleSelectChange}>
                   <option value={'order_placed'}>order_placed</option>
                   <option value={'order_confirmed'}>order_confirmed</option>
                   <option value={'order_dispatched'}>order_dispatched</option>

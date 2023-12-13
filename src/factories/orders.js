@@ -24,3 +24,12 @@ export const getOrders = async (accessToken, role) => {
   })
   return response.data
 }
+
+export const makeUpdateOrderStatus = async (accessToken, id, status) => {
+  const response = await axios.put(`${REACT_BE_SERVER_URL}/orders/${id}`, { status }, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+  return response
+}

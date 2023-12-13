@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import { getOrders } from '../factories/orders'
+import { getOrders, makeUpdateOrderStatus } from '../factories/orders'
 import { accountState } from '../store/atoms'
 import { useRecoilValue } from 'recoil'
-import { Button, Modal } from 'react-bootstrap'
+import { Button } from 'react-bootstrap'
 import OrderStatusUpdateDialog from '../components/orders/OrderStatusUpdateDialog'
 
 export default function Orders() {
@@ -29,12 +29,22 @@ export default function Orders() {
     setOrderDetails(order)
   }
 
-  const handleStatusUpdate = (status) => {
+  const handleStatusUpdate = async (status) => {
     if (!status) {
       setShow(false)
-      return;
+      return
     }
-    alert(`Successfully updated to ${status}`)
+
+    try {
+      const { accessToken } = account
+      await makeUpdateOrderStatus(accessToken, orderDetails.id, status)
+      await fetchOrders()
+      alert(`Order successfully updated to ${status}`)
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setShow(false)
+    }
   }
 
   return (
@@ -72,7 +82,11 @@ export default function Orders() {
           </tbody>
         </table>
       </div>
-      <OrderStatusUpdateDialog show={show} order={orderDetails} onStatusUpdate={handleStatusUpdate} />
+      <OrderStatusUpdateDialog
+        show={show}
+        order={orderDetails}
+        onStatusUpdate={handleStatusUpdate}
+      />
     </div>
   )
 }
