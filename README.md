@@ -18,7 +18,7 @@ npm install react-router-dom
 
 ## 3. Prettier
 
-Prettier is a code formatter. Create a new file with name `.prettierrc` and add below content.
+Prettier is a code formatter. Install Extesion and Create a new file with name `.prettierrc` and add below content.
 
 ```
 {
@@ -37,4 +37,3 @@ Prettier is a code formatter. Create a new file with name `.prettierrc` and add 
 SonarLint is a free IDE extension that empowers you to fix coding issues before they exist. More than a linter, SonarLint detects and highlights issues that can lead to bugs, vulnerabilities, and code smells as you create your code.
 
 Just install extension in your IDE/VS-Code.
-
