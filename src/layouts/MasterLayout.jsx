@@ -1,10 +1,17 @@
 import { Link, Outlet, useNavigate } from 'react-router-dom'
 import { useRecoilState } from 'recoil'
 import { accountState } from '../store/atoms'
+import { useEffect } from 'react'
 
 export default function MasterLayout() {
   const [account, setAccount] = useRecoilState(accountState)
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!account?.accessToken) {
+      navigate('/')
+    }
+  }, [])
 
   const logout = () => {
     setAccount(undefined)
