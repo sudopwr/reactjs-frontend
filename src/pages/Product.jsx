@@ -1,73 +1,42 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { useNavigate } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
 import { accountState, editProductState } from '../store/atoms'
 import demoImage from '../assets/demoimage.png'
-import {
-  requiredValidation,
-  numberValidation,
-  alphabetsSpaceValidation,
-} from '../factories/validation'
 import { makeAddProduct, makeEditProduct } from '../factories/product'
 
 export default function Product() {
   const account = useRecoilValue(accountState)
   const [editProduct, setEditProduct] = useRecoilState(editProductState)
   const navigate = useNavigate()
-
-  const [product, setProduct] = useState({
-    name: {
-      name: 'name',
-      value: editProduct?.name || '',
-      error: false,
-      errorMessage: 'Name is required and numbers not allowed',
-      validations: [requiredValidation, alphabetsSpaceValidation],
-    },
-    price: {
-      name: 'price',
-      value: editProduct?.price || '',
-      error: false,
-      errorMessage: 'Price must be number',
-      validations: [requiredValidation, numberValidation],
-    },
-    quantity: {
-      name: 'quantity',
-      value: editProduct?.quantity || '',
-      error: false,
-      errorMessage: 'Quantity must be number',
-      validations: [requiredValidation],
-    },
-    description: {
-      name: 'description',
-      value: editProduct?.description || '',
-      error: false,
-      errorMessage: 'Description is required',
-      validations: [requiredValidation],
-    },
-    image: {
-      value: editProduct?.image || '',
-      error: false,
-      errorMessage: 'Image is required',
-      validations: [],
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      name: editProduct.name || '',
+      quantity: editProduct.quantity || '',
+      price: editProduct.price || '',
+      description: editProduct.description || '',
     },
   })
+  const [image, setImage] = useState({
+    value: editProduct.image || '',
+    error: false
+  })
 
-  const onSubmit = async () => {
+  const onSubmit = async (data) => {
     try {
       const { accessToken } = account
-      const data = {
-        name: product.name.value,
-        price: product.price.value,
-        quantity: product.quantity.value,
-        description: product.description.value,
-        image: product.image.value,
-      }
       if (editProduct?.id) {
-        await makeEditProduct(accessToken, editProduct.id, data)
+        await makeEditProduct(accessToken, editProduct.id, { ...data, image: image.value })
         setEditProduct({})
       } else {
-        await makeAddProduct(accessToken, data)
+        await makeAddProduct(accessToken, { ...data, image: image.value })
       }
+
       navigate('/')
     } catch (e) {
       console.error(e)
@@ -81,13 +50,9 @@ export default function Product() {
       reader.onload = function (e) {
         const imageCode = e.target.result
         document.getElementById('demoImage').src = imageCode
-        setProduct({
-          ...product,
-          image: {
-            ...product.image,
-            value: imageCode,
-            error: false,
-          },
+        setImage({
+          value: imageCode,
+          error: false
         })
       }
 
@@ -95,127 +60,61 @@ export default function Product() {
     }
   }
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setProduct({
-      ...product,
-      [name]: {
-        ...product[name],
-        value,
-      },
-    })
-  }
-
-  const handleSubmit = (e, onSubmit) => {
-    e.preventDefault()
-    const errors = []
-    Object.keys(product).forEach((key) => {
-      const validations = product[key].validations
-      let noError = true
-      validations.forEach((validation) => {
-        if (noError === false) return true
-        noError = validation(product[key].value)
-      })
-
-      if (noError === false) {
-        setProduct((product) => ({
-          ...product,
-          [key]: {
-            ...product[key],
-            error: true,
-          },
-        }))
-
-        errors.push({
-          name: key,
-          error: true,
-        })
-      } else {
-        setProduct((product) => ({
-          ...product,
-          [key]: {
-            ...product[key],
-            error: false,
-          },
-        }))
-      }
-    })
-    return errors.length == 0 ? onSubmit() : false
-  }
-
   return (
     <div className='container-md w-25 mt-5'>
       <div className='row'>
         <div className='d-flex justify-content-center'>
-          <form onSubmit={(e) => handleSubmit(e, onSubmit)}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className='mb-3'>
               <label htmlFor='name' className='form-label'>
-                Name
+                Name*
               </label>
               <input
                 type='text'
                 className='form-control'
                 placeholder='Enter product name'
-                name={product.name.name}
-                id={product.name.name}
-                value={product.name.value}
-                onChange={handleChange}
+                {...register('name', { required: true })}
               />
-              {product.name.error && <div className='text-danger'>{product.name.errorMessage}</div>}
+              {errors.name && <div className='text-danger'>Name is required</div>}
             </div>
             <div className='mb-3'>
               <label htmlFor='price' className='form-label'>
-                price
+                Price*
               </label>
               <input
                 type='text'
                 className='form-control'
                 placeholder='Enter product price'
-                name={product.price.name}
-                id={product.price.name}
-                value={product.price.value}
-                onChange={handleChange}
+                {...register('price', { required: true })}
               />
-              {product.price.error && (
-                <div className='text-danger'>{product.price.errorMessage}</div>
-              )}
+              {errors.price && <div className='text-danger'>Price is required</div>}
             </div>
             <div className='mb-3'>
               <label htmlFor='quantity' className='form-label'>
-                Quantity
+                Quantity*
               </label>
               <input
                 type='text'
                 className='form-control'
                 placeholder='Enter Quantity'
-                name={product.quantity.name}
-                id={product.quantity.name}
-                value={product.quantity.value}
-                onChange={handleChange}
+                {...register('quantity', { required: true })}
               />
-              {product.quantity.error && (
-                <div className='text-danger'>{product.quantity.errorMessage}</div>
-              )}
+              {errors.quantity && <div className='text-danger'>Quantity is required</div>}
             </div>
             <div className='mb-3'>
               <label htmlFor='description' className='form-label'>
-                Description
+                Description*
               </label>
               <textarea
                 className='form-control'
                 rows='3'
-                name={product.description.name}
-                id={product.description.name}
-                value={product.description.value}
-                onChange={handleChange}
+                {...register('description', { required: true })}
               ></textarea>
-              {product.description.error && (
-                <div className='text-danger'>{product.description.errorMessage}</div>
-              )}
+              {errors.description && <div className='text-danger'>Description is required</div>}
             </div>
             <div className='mb-3'>
               <label htmlFor='productImage' className='form-label'>
-                Product image
+                Product image*
               </label>
               <input
                 className='form-control form-control-sm'
@@ -223,15 +122,8 @@ export default function Product() {
                 id='productImage'
                 type='file'
               />
-              <img
-                id='demoImage'
-                src={product.image.value || demoImage}
-                className='w-25 mt-2'
-                alt='your image'
-              />
-              {product.image.error && (
-                <div className='text-danger'>{product.image.errorMessage}</div>
-              )}
+              <img alt='product' id='demoImage' src={image.value || demoImage} className='w-25 mt-2' />
+              {image.error && <div className='text-danger'>Image is required</div>}
             </div>
             <div className='col-12 d-flex justify-content-center'>
               <button className='btn btn-primary' type='submit'>
