@@ -16,14 +16,14 @@ export default function Product() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      name: editProduct.name || '',
-      quantity: editProduct.quantity || '',
-      price: editProduct.price || '',
-      description: editProduct.description || '',
+      name: editProduct?.name || '',
+      quantity: editProduct?.quantity || '',
+      price: editProduct?.price || '',
+      description: editProduct?.description || '',
     },
   })
   const [image, setImage] = useState({
-    value: editProduct.image || '',
+    value: editProduct?.image || '',
     error: false
   })
 
