@@ -1,6 +1,10 @@
 # React JS Frontend
 
-## 1. Setup Vite project
+## 1. Install Node JS
+
+https://nodejs.org/en/download/prebuilt-installer
+
+## 2. Setup Vite project
 
 https://vitejs.dev/guide
 
@@ -10,13 +14,7 @@ npm install
 npm run dev
 ```
 
-## 2. Setup routes
-
-```
-npm install react-router-dom
-```
-
-## 3. Prettier
+## 4. Prettier
 
 Prettier is a code formatter. Install Extesion and Create a new file with name `.prettierrc` and add below content.
 
@@ -32,7 +30,7 @@ Prettier is a code formatter. Install Extesion and Create a new file with name `
 }
 ```
 
-## 4. SonarLint
+## 5. SonarLint
 
 SonarLint is a free IDE extension that empowers you to fix coding issues before they exist. More than a linter, SonarLint detects and highlights issues that can lead to bugs, vulnerabilities, and code smells as you create your code.
 
